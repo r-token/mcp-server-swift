@@ -155,6 +155,6 @@ struct SwiftVersionToolInput: ProducesJSONSchema, ParamInitializable {
 
 enum RegisteredTools: String {
 	case echo
-	case selectRandom
-	case swiftVersion
+	case selectRandom = "select_random"
+	case swiftVersion = "swift_version"
 }
