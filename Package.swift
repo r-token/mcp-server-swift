@@ -41,7 +41,7 @@ let package = Package(
 			]
 		),
 		.testTarget(
-			name: "SwiftMCPServerExampleTests",
+			name: "SwiftMCPServerTests",
 			dependencies: [
 				"SwiftMCPServer",
 				.product(
