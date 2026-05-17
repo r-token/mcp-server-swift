@@ -8,9 +8,7 @@
 import Foundation
 import Logging
 import MCP
-import MCPHelpers
 import ServiceLifecycle
-import SwiftyJsonSchema
 
 /// Creates and configures the MCP server and configures the tools
 class MCPServerFactory {
@@ -35,7 +33,10 @@ class MCPServerFactory {
 	}
 
 	static func toolsHandler(params: CallTool.Parameters) async throws -> CallTool.Result {
-		let unknownToolError = CallTool.Result(content: [.text("Unknown tool")], isError: true)
+		let unknownToolError = CallTool.Result(
+			content: [.text(text: "Unknown tool", annotations: nil, _meta: nil)],
+			isError: true
+		)
 
 		// Convert tool name to our enum
 		guard let tool = RegisteredTools(rawValue: params.name) else {
@@ -44,30 +45,38 @@ class MCPServerFactory {
 
 		switch tool {
 		case RegisteredTools.echo:
-			let input = try EchoToolInput(with: params)
+			let input = try EchoToolInput(arguments: params.arguments)
 			let result = echoHandler(input.echoText)
 			return .init(
-				content: [.text("You sent: \(result)")],
+				content: [.text(text: "You sent: \(result)", annotations: nil, _meta: nil)],
 				isError: false
 			)
 
 		case RegisteredTools.selectRandom:
-			let input = try PickRandomToolInput(with: params)
+			let input = try PickRandomToolInput(arguments: params.arguments)
 			let result = pickRandomNumberHandler(input.ints)
 			return .init(
-				content: [.text("I picked: \(result)")],
+				content: [.text(text: "I picked: \(result)", annotations: nil, _meta: nil)],
 				isError: false
 			)
 		case RegisteredTools.swiftVersion:
-			_ = try SwiftVersionToolInput(with: params)
+			_ = SwiftVersionToolInput()
 			if let result = getSwiftVersion() {
 				return .init(
-					content: [.text("Swift version: \(result)")],
+					content: [
+						.text(text: "Swift version: \(result)", annotations: nil, _meta: nil)
+					],
 					isError: false
 				)
 			} else {
 				return .init(
-					content: [.text("Unable to retrieve Swift version")],
+					content: [
+						.text(
+							text: "Unable to retrieve Swift version",
+							annotations: nil,
+							_meta: nil
+						)
+					],
 					isError: true
 				)
 			}
@@ -84,18 +93,18 @@ class MCPServerFactory {
 				Tool(
 					name: RegisteredTools.echo.rawValue,
 					description: "Echo back any text that was sent",
-					inputSchema: try .produced(from: EchoToolInput.self)
+					inputSchema: EchoToolInput.inputSchema
 				),
 				Tool(
 					name: RegisteredTools.selectRandom.rawValue,
 					description:
 						"Takes in a collection of numbers or strings and picks one at random",
-					inputSchema: try .produced(from: PickRandomToolInput.self)
+					inputSchema: PickRandomToolInput.inputSchema
 				),
 				Tool(
 					name: RegisteredTools.swiftVersion.rawValue,
 					description: "Retrieves the current Swift version",
-					inputSchema: try .produced(from: SwiftVersionToolInput.self)
+					inputSchema: SwiftVersionToolInput.inputSchema
 				),
 			]
 			return .init(tools: tools)
@@ -136,21 +145,59 @@ class MCPServerFactory {
 	}
 }
 
-// Uses SwiftyJsonSchema to generate the JSON schema that informs the LLM of how to structure the tool call
-struct EchoToolInput: ProducesJSONSchema, ParamInitializable {
-	static let exampleValue = EchoToolInput(echoText: "Echo...")
-	
-	var echoText: String = ""
+struct EchoToolInput {
+	var echoText: String
+
+	init(arguments: [String: Value]?) throws {
+		guard case let .string(text) = arguments?["echoText"] else {
+			throw MCPError.invalidParams("Missing or invalid 'echoText' string parameter")
+		}
+		self.echoText = text
+	}
+
+	static let inputSchema: Value = [
+		"type": "object",
+		"properties": [
+			"echoText": [
+				"type": "string",
+				"description": "The text to echo back",
+			]
+		],
+		"required": ["echoText"],
+	]
 }
 
-struct PickRandomToolInput: ProducesJSONSchema, ParamInitializable {
-	static let exampleValue = PickRandomToolInput(ints: [5, 4, 6, 7, 123, 8411])
+struct PickRandomToolInput {
+	var ints: [Int]?
 
-	var ints: [Int]? = nil
+	init(arguments: [String: Value]?) throws {
+		guard let raw = arguments?["ints"] else {
+			self.ints = nil
+			return
+		}
+		guard case let .array(items) = raw else {
+			throw MCPError.invalidParams("'ints' must be an array of integers")
+		}
+		self.ints = items.compactMap { Int($0) }
+	}
+
+	static let inputSchema: Value = [
+		"type": "object",
+		"properties": [
+			"ints": [
+				"type": "array",
+				"items": ["type": "integer"],
+				"description": "A collection of integers to pick from at random",
+			]
+		],
+	]
 }
 
-struct SwiftVersionToolInput: ProducesJSONSchema, ParamInitializable {
-	static let exampleValue = SwiftVersionToolInput()
+struct SwiftVersionToolInput {
+	static let inputSchema: Value = [
+		"type": "object",
+		"properties": [:],
+	]
 }
 
 enum RegisteredTools: String {

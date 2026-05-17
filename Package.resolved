@@ -1,31 +1,13 @@
 {
-  "originHash" : "d7975a769447b7786bf756ebb3eb72aac0b1ea6b0c42b0af769107af55295428",
+  "originHash" : "12b243f8d8e2614e056d408b16ab8b08b4ab216080eafa9dfad73cddfcf110b8",
   "pins" : [
     {
       "identity" : "eventsource",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/loopwork-ai/eventsource.git",
+      "location" : "https://github.com/mattt/eventsource.git",
       "state" : {
         "revision" : "ca2a9d90cbe49e09b92f4b6ebd922c03ebea51d0",
         "version" : "1.3.0"
-      }
-    },
-    {
-      "identity" : "mcp-swift-sdk",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/glaciotech/mcp-swift-sdk.git",
-      "state" : {
-        "revision" : "0a31ddeba909db479cc1efb4d744496f87f70eda",
-        "version" : "0.9.1"
-      }
-    },
-    {
-      "identity" : "mcp-swift-sdk-helpers",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/glaciotech/mcp-swift-sdk-helpers.git",
-      "state" : {
-        "revision" : "ccd7b13cb5f67e3dce99d9abc4f103bed774e77d",
-        "version" : "0.2.1"
       }
     },
     {
@@ -35,6 +17,15 @@
       "state" : {
         "revision" : "2971dd5d9f6e0515664b01044826bcea16e59fac",
         "version" : "1.1.2"
+      }
+    },
+    {
+      "identity" : "swift-atomics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-atomics.git",
+      "state" : {
+        "revision" : "b601256eab081c0f92f059e12818ac1d4f178ff7",
+        "version" : "1.3.0"
       }
     },
     {
@@ -56,6 +47,24 @@
       }
     },
     {
+      "identity" : "swift-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio.git",
+      "state" : {
+        "revision" : "f71c8d2a5e74a2c6d11a0fbe324774b5d6084237",
+        "version" : "2.99.0"
+      }
+    },
+    {
+      "identity" : "swift-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/modelcontextprotocol/swift-sdk.git",
+      "state" : {
+        "revision" : "a0ae212ebf6eab5f754c3129608bc5557637e605",
+        "version" : "0.12.1"
+      }
+    },
+    {
       "identity" : "swift-service-lifecycle",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-service-lifecycle.git",
@@ -71,15 +80,6 @@
       "state" : {
         "revision" : "7c6ad0fc39d0763e0b699210e4124afd5041c5df",
         "version" : "1.6.4"
-      }
-    },
-    {
-      "identity" : "swifty-json-schema",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ptliddle/swifty-json-schema.git",
-      "state" : {
-        "revision" : "cfc92524002837d32614eac51f4cc44e07e75b65",
-        "version" : "0.3.0"
       }
     }
   ],

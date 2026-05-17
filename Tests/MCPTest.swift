@@ -26,7 +26,8 @@ struct MCPTest {
 		)
 
 		// Extract text from the content array
-		guard case .text(let textValue) = echoResult.content.first else {
+		guard case let .text(text: textValue, annotations: _, _meta: _) = echoResult.content.first
+		else {
 			Issue.record("Expected text content")
 			return
 		}
@@ -50,7 +51,8 @@ struct MCPTest {
 		#expect(randomResult.isError == false)
 
 		// Verify the result contains one of our test numbers
-		guard case .text(let textValue) = randomResult.content.first else {
+		guard case let .text(text: textValue, annotations: _, _meta: _) = randomResult.content.first
+		else {
 			Issue.record("Expected text content")
 			return
 		}
@@ -70,7 +72,10 @@ struct MCPTest {
 		)
 
 		// Extract text from the content array
-		guard case .text(let swiftVersion) = swiftVersionResult.content.first else {
+		guard
+			case let .text(text: swiftVersion, annotations: _, _meta: _) = swiftVersionResult
+				.content.first
+		else {
 			Issue.record("Could not retrieve Swift version")
 			return
 		}
